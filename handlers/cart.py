@@ -1,10 +1,13 @@
 from aiogram import Router, types, F
 from aiogram.enums import ParseMode
+from aiogram.filters import Command
+from aiogram.types import Message
 
 from filters.cart import ConfirmAddCartCallbackFactory
 from keyboards.cart import generate_cart_items_keyboard
 from network.cart import get_cart
 from network.product import add_to_cart
+from services.cart import send_cart_data
 
 router = Router()
 
@@ -31,14 +34,11 @@ async def add_product(
     )
 
 
-@router.callback_query(F.data == "cart")
-async def category_list(callback: types.CallbackQuery):
-    cart_data = get_cart(str(callback.from_user.id))
-    total_sum = cart_data.get("total_sum")
-    cart_items = cart_data.get("items", [])
-    keyboard = generate_cart_items_keyboard(cart_items)
-    await callback.message.answer(
-        text=f'<b>Ваша корзина</b>\nТоваров: {len(cart_items)}\nОбщая сумма: {total_sum} рублей',
-        reply_markup=keyboard,
-        parse_mode=ParseMode.HTML
-    )
+@router.message(Command('cart'))
+async def my_cart_command(message: Message):
+    await send_cart_data(message, str(message.from_user.id))
+
+
+@router.callback_query(F.data == "my_cart")
+async def my_cart(callback: types.CallbackQuery):
+    await send_cart_data(callback.message, str(callback.from_user.id))

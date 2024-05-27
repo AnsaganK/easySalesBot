@@ -12,7 +12,7 @@ def generate_catalog_keyboard() -> InlineKeyboardMarkup:
         text=f"{TelegramEmoji.PERSON} Кабинет", callback_data="cabinet"
     )
     button3 = types.InlineKeyboardButton(
-        text=f"{TelegramEmoji.CART} Корзина", callback_data="cart"
+        text=f"{TelegramEmoji.CART} Корзина", callback_data="my_cart"
     )
     button4 = types.InlineKeyboardButton(
         text=f"{TelegramEmoji.STAR} Избранные", callback_data="favourite"
