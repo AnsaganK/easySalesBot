@@ -32,18 +32,19 @@ async def product_detail(
         callback: types.CallbackQuery,
         callback_data: Union[ProductCallbackFactory, ProductQuantityCallbackFactory]
 ):
+    product_id = callback_data.product_id
     name = callback_data.name
     slug = callback_data.slug
     if isinstance(callback_data, ProductCallbackFactory):
-        keyboard = generate_product_keyboard(name, slug, 1)
+        keyboard = generate_product_keyboard(product_id, name, slug, 1)
         await callback.message.edit_text(
-            text=f'<b>{name}</b>',
+            text=f'Товар: <b>{name}</b>',
             reply_markup=keyboard,
             parse_mode=ParseMode.HTML
         )
     elif isinstance(callback_data, ProductQuantityCallbackFactory):
         quantity = callback_data.quantity
-        keyboard = generate_product_keyboard(name, slug, quantity)
+        keyboard = generate_product_keyboard(product_id, name, slug, quantity)
         await callback.message.edit_reply_markup(reply_markup=keyboard)
 
 
@@ -52,11 +53,12 @@ async def add_cart(
         callback: types.CallbackQuery,
         callback_data: ProductAddCartCallbackFactory
 ):
+    product_id = callback_data.product_id
     name = callback_data.name
     slug = callback_data.slug
     quantity = callback_data.quantity
     await callback.message.edit_text(
-        text=f'<b>{name}</b>',
-        reply_markup=generate_confirm_cart_keyboard(slug),
+        text=f'Товар: <b>{name}</b>',
+        reply_markup=generate_confirm_cart_keyboard(product_id, name, slug, quantity),
         parse_mode=ParseMode.HTML
     )

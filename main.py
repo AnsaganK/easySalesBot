@@ -9,7 +9,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 
 from config import BOT_TOKEN, CHANNEL_ID, GROUP_ID, LOGO_FILE_ID
-from handlers import category, product
+from handlers import category, product, cart
 from keyboards.catalog import generate_catalog_keyboard
 from network.subscribe import is_subscriber_user
 from network.user import create_user
@@ -20,6 +20,7 @@ CHANNEL_ID = CHANNEL_ID
 GROUP_ID = GROUP_ID
 
 dp = Dispatcher()
+dp.include_routers(cart.router)
 dp.include_routers(category.router)
 dp.include_routers(product.router)
 

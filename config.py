@@ -15,6 +15,7 @@ class TelegramEmoji(Enum):
     PERSON = '👤'
     CHECK = '✅'
     X = '❌'
+    BACK = '🔙'
 
     def __str__(self):
         return self.value
