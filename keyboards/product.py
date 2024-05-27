@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import TelegramEmoji
-from filters.product import ProductCallbackFactory, ProductQuantityCallbackFactory
+from filters.product import ProductCallbackFactory, ProductQuantityCallbackFactory, ProductAddCartCallbackFactory
 from network.product import get_products
 
 
@@ -19,23 +19,21 @@ def generate_products_keyboard(slug) -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
-def generate_product_keyboard(slug: str, quantity: int) -> InlineKeyboardMarkup:
-    button1 = types.InlineKeyboardButton(
-        text=f"{TelegramEmoji.CART} в Корзину", callback_data="category_list"
+def generate_product_keyboard(name: str, slug: str, quantity: int = 1) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="-", callback_data=ProductQuantityCallbackFactory(name=name, slug=slug, quantity=quantity - 1))
+    builder.button(
+        text=f"{quantity}", callback_data=ProductQuantityCallbackFactory(name=name, slug=slug, quantity=quantity)
     )
-    button2 = types.InlineKeyboardButton(
+    builder.button(text="+", callback_data=ProductQuantityCallbackFactory(name=name, slug=slug, quantity=quantity + 1))
+
+    builder.button(
+        text=f"{TelegramEmoji.CART} в Корзину",
+        callback_data=ProductAddCartCallbackFactory(name=name, slug=slug, quantity=quantity)
+    )
+    builder.button(
         text=f"{TelegramEmoji.STAR} в Избранное", callback_data="category_list"
     )
+    builder.adjust(3, 1, 1)
 
-    button3 = types.InlineKeyboardButton(
-        text="-", callback_data=ProductQuantityCallbackFactory.new(quantity=quantity - 1)
-    )
-    button4 = types.InlineKeyboardButton(
-        text=f"{quantity}", callback_data=""
-    )
-    button5 = types.InlineKeyboardButton(
-        text="+", callback_data=ProductQuantityCallbackFactory.new(quantity=quantity + 1)
-    )
-    markup = InlineKeyboardMarkup(inline_keyboard=[[button3, button4, button5], [button1], [button2]])
-
-    return markup
+    return builder.as_markup()

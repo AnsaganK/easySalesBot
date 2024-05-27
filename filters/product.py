@@ -9,3 +9,10 @@ class ProductCallbackFactory(CallbackData, prefix="product"):
 class ProductQuantityCallbackFactory(CallbackData, prefix="quantity"):
     name: str = None
     slug: str = None
+    quantity: int = 1
+
+
+class ProductAddCartCallbackFactory(CallbackData, prefix="cart"):
+    name: str = None
+    slug: str = None
+    quantity: int = 1
